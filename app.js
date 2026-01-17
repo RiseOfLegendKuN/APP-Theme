@@ -1,5 +1,5 @@
 // Redesigned by telegram.dog/TheFirstSpeedster at https://www.npmjs.com/package/@googledrive/index which was written by someone else, credits are given on Source Page.
-// v1.0.6
+// v1.0.7
 // Initialize the page
 function init() {
 	document.siteName = $('title').html();
@@ -1299,7 +1299,7 @@ function view_file_as_raw(name, size, url) {
           <div class="${UI.file_view_alert_class}" id="file_details" role="alert">${name}<br>${size}</div>
         </div>
         <div id="raw_content_spinner"></div>
-        <pre id="raw_content" style="text-align: left; max-height: 600px; overflow: auto; background-color: #1e1e1e; color: #d4d4d4; padding: 15px; font-family: 'Courier New', monospace; font-size: 13px; border-radius: 5px;"></pre>
+        <pre id="raw_content" style="text-align: left; max-height: 600px; overflow: auto; background-color: #1e1e1e; color: #d4d4d4; padding: 15px; font-family: 'Courier New', monospace; font-size: 13px; border-radius: 5px; direction: auto; unicode-bidi: auto; word-wrap: break-word; white-space: pre-wrap;"></pre>
         <div class="card-body">
           <div class="btn-group text-center">
             <a href="${window.location.pathname}?a=view" type="button" class="btn btn-primary">Back to Subtitle View</a>
