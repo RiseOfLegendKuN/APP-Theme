@@ -1,5 +1,5 @@
 // Redesigned by telegram.dog/TheFirstSpeedster at https://www.npmjs.com/package/@googledrive/index which was written by someone else, credits are given on Source Page.
-// v1.0.6
+// v1.0.5
 // Initialize the page
 function init() {
 	document.siteName = $('title').html();
@@ -1338,8 +1338,8 @@ function file_subtitle(name, encoded_name, size, url, file_id, cookie_folder_id)
             ` + copyButton + `
             <div class="btn-group text-center ms-2">
                 <a href="${rawViewLink}" type="button" class="btn btn-info" target="_blank" title="View subtitle file content in raw format">View As Raw</a>
-                <button type="button" class="btn btn-info" onclick="copyRawLink('${rawViewLink}', this)" title="Copy raw view link for AI processing">Copy View As Raw Link</button>
             </div>
+			<button type="button" class="btn btn-info" onclick="copyRawLink('${rawViewLink}', this)" title="Copy raw view link for AI processing">Copy Raw Link</button>
             ` + copyFileBox + `
             </div>
             <br></div>`;
