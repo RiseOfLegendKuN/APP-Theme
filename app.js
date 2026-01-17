@@ -1,5 +1,5 @@
 // Redesigned by telegram.dog/TheFirstSpeedster at https://www.npmjs.com/package/@googledrive/index which was written by someone else, credits are given on Source Page.
-// v1.0.7
+// v1.0.8
 // Initialize the page
 function init() {
 	document.siteName = $('title').html();
@@ -1262,64 +1262,14 @@ async function file(path) {
 		});
 }
 
-// View subtitle file as plain text (raw)
+// View subtitle file as plain text (raw) - No HTML styling
 function view_file_as_raw(name, size, url) {
-	var path = window.location.pathname;
-	var pathParts = path.split('/');
-	// Generate the navigation based on path parts
-	var navigation = '';
-	var new_path = '';
-	for (var i = 0; i < pathParts.length; i++) {
-		var part = pathParts[i];
-		if (i == pathParts.length - 1) {
-			new_path += part + '?a=view'
-		} else {
-			new_path += part + '/'
-		}
-		if (part.length > 15) {
-			part = decodeURIComponent(part);
-			part = part.substring(0, 10) + '...';
-		}
-		if (part == '') {
-			part = 'Home'
-		}
-		navigation += '<a href="' + new_path + '" class="breadcrumb-item">' + part + '</a>';
-	}
-
-	// Add the container and card elements
-	var content = `
-    <div class="container"><br>
-      <nav aria-label="breadcrumb">
-        <ol class="breadcrumb">
-          ${navigation}
-        </ol>
-      </nav>
-      <div class="card text-center">
-        <div class="card-body text-center">
-          <div class="${UI.file_view_alert_class}" id="file_details" role="alert">${name}<br>${size}</div>
-        </div>
-        <div id="raw_content_spinner"></div>
-        <pre id="raw_content" style="text-align: left; max-height: 600px; overflow: auto; background-color: #1e1e1e; color: #d4d4d4; padding: 15px; font-family: 'Courier New', monospace; font-size: 13px; border-radius: 5px;"></pre>
-        <div class="card-body">
-          <div class="btn-group text-center">
-            <a href="${window.location.pathname}?a=view" type="button" class="btn btn-primary">Back to Subtitle View</a>
-          </div>
-          <br>
-        </div>
-      </div>
-    </div>`;
-
-	$("#content").html(content);
-	var spinner = '<div class="d-flex justify-content-center"><div class="spinner-border m-5" role="status"><span class="sr-only"></span></div></div>';
-	$("#raw_content_spinner").html(spinner);
-	
-	// Fetch and display file content
+	// Fetch and display file content as plain text only
 	$.get(url, function(data) {
-		$("#raw_content_spinner").html("");
-		$("#raw_content").html($('<div/>').text(data).html());
+		// Display only the raw text content without any HTML
+		$("#content").html(`<pre style="margin: 0; padding: 0; background-color: transparent; font-family: inherit; white-space: pre-wrap; word-wrap: break-word;">${$('<div/>').text(data).html()}</pre>`);
 	}).fail(function() {
-		$("#raw_content_spinner").html("");
-		$("#raw_content").html(`<div class="${UI.file_view_alert_class}" role="alert">Failed to load file content</div>`);
+		$("#content").html(`<pre>Failed to load file content</pre>`);
 	});
 }
 
