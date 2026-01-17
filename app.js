@@ -1,5 +1,5 @@
 // Redesigned by telegram.dog/TheFirstSpeedster at https://www.npmjs.com/package/@googledrive/index which was written by someone else, credits are given on Source Page.
-// v1.0.6
+// v1.0.7
 // Initialize the page
 function init() {
 	document.siteName = $('title').html();
@@ -1185,6 +1185,8 @@ async function fallback(id, type) {
 async function file(path) {
 	var cookie_folder_id = await getCookie("root_id") || '';
 	var name = path.split('/').pop();
+	const view_as_raw = getQueryVariable('a') === 'view_as_raw';
+	
 	$('#content').html(`<div class="d-flex justify-content-center" style="height: 150px"><div class="spinner-border ${UI.loading_spinner_class} m-5" role="status" id="spinner"><span class="sr-only"></span></div></div>`);
 	fetch("", {
 			method: "POST",
@@ -1219,7 +1221,11 @@ async function file(path) {
 				const size = formatFileSize(obj.size);
 				const url = UI.second_domain_for_dl ? UI.downloaddomain + obj.link : window.location.origin + obj.link;
 				const file_id = obj.id;
-				if (mimeType.includes("video") || video.includes(fileExtension)) {
+				
+				// Handle view_as_raw for subtitle files
+				if (view_as_raw && subtitle.includes(fileExtension)) {
+					view_file_as_raw(name, size, url);
+				} else if (mimeType.includes("video") || video.includes(fileExtension)) {
 					const poster = obj.thumbnailLink ? obj.thumbnailLink.replace("s220", "s0") : UI.poster;
 					file_video(name, encoded_name, size, poster, url, mimeType, file_id, cookie_folder_id);
 				} else if (mimeType.includes("audio") || audio.includes(fileExtension)) {
@@ -1254,6 +1260,67 @@ async function file(path) {
         </div>`;
 			$("#content").html(content);
 		});
+}
+
+// View subtitle file as plain text (raw)
+function view_file_as_raw(name, size, url) {
+	var path = window.location.pathname;
+	var pathParts = path.split('/');
+	// Generate the navigation based on path parts
+	var navigation = '';
+	var new_path = '';
+	for (var i = 0; i < pathParts.length; i++) {
+		var part = pathParts[i];
+		if (i == pathParts.length - 1) {
+			new_path += part + '?a=view'
+		} else {
+			new_path += part + '/'
+		}
+		if (part.length > 15) {
+			part = decodeURIComponent(part);
+			part = part.substring(0, 10) + '...';
+		}
+		if (part == '') {
+			part = 'Home'
+		}
+		navigation += '<a href="' + new_path + '" class="breadcrumb-item">' + part + '</a>';
+	}
+
+	// Add the container and card elements
+	var content = `
+    <div class="container"><br>
+      <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+          ${navigation}
+        </ol>
+      </nav>
+      <div class="card text-center">
+        <div class="card-body text-center">
+          <div class="${UI.file_view_alert_class}" id="file_details" role="alert">${name}<br>${size}</div>
+        </div>
+        <div id="raw_content_spinner"></div>
+        <pre id="raw_content" style="text-align: left; max-height: 600px; overflow: auto; background-color: #1e1e1e; color: #d4d4d4; padding: 15px; font-family: 'Courier New', monospace; font-size: 13px; border-radius: 5px;"></pre>
+        <div class="card-body">
+          <div class="btn-group text-center">
+            <a href="${window.location.pathname}?a=view" type="button" class="btn btn-primary">Back to Subtitle View</a>
+          </div>
+          <br>
+        </div>
+      </div>
+    </div>`;
+
+	$("#content").html(content);
+	var spinner = '<div class="d-flex justify-content-center"><div class="spinner-border m-5" role="status"><span class="sr-only"></span></div></div>';
+	$("#raw_content_spinner").html(spinner);
+	
+	// Fetch and display file content
+	$.get(url, function(data) {
+		$("#raw_content_spinner").html("");
+		$("#raw_content").html($('<div/>').text(data).html());
+	}).fail(function() {
+		$("#raw_content_spinner").html("");
+		$("#raw_content").html(`<div class="${UI.file_view_alert_class}" role="alert">Failed to load file content</div>`);
+	});
 }
 
 const copyButton = `<button onclick="copyFunction()" onmouseout="outFunc()" class="btn btn-success"> <span class="tooltiptext" id="myTooltip">Copy</span> </button>`
@@ -1305,7 +1372,7 @@ function file_subtitle(name, encoded_name, size, url, file_id, cookie_folder_id)
 	}
 
 	// Create raw view link (without encryption for AI processing)
-	const rawViewLink = url;
+	const rawViewLink = window.location.pathname + '?a=view_as_raw';
 
 	// Add the container and card elements
 	var content = `
