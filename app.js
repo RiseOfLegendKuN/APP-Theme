@@ -1267,9 +1267,14 @@ function view_file_as_raw(name, size, url) {
 	// Fetch and display file content as plain text only
 	$.get(url, function(data) {
 		// Display only the raw text content without header/footer
-		$('body').html(`<pre style="margin: 0; padding: 0; background-color: transparent; font-family: inherit; white-space: pre-wrap; word-wrap: break-word;">${$('<div/>').text(data).html()}</pre>`);
+		// Replace entire document with just the plain text content
+		document.open('text/plain', 'replace');
+		document.write(data);
+		document.close();
 	}).fail(function() {
-		$('body').html(`<pre>Failed to load file content</pre>`);
+		document.open('text/plain', 'replace');
+		document.write('Failed to load file content');
+		document.close();
 	});
 }
 
