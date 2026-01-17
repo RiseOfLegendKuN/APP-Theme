@@ -1,5 +1,5 @@
 // Redesigned by telegram.dog/TheFirstSpeedster at https://www.npmjs.com/package/@googledrive/index which was written by someone else, credits are given on Source Page.
-// v1.0.8
+// v1.0.6
 // Initialize the page
 function init() {
 	document.siteName = $('title').html();
@@ -1266,10 +1266,10 @@ async function file(path) {
 function view_file_as_raw(name, size, url) {
 	// Fetch and display file content as plain text only
 	$.get(url, function(data) {
-		// Display only the raw text content without any HTML
-		$("#content").html(`<pre style="margin: 0; padding: 0; background-color: transparent; font-family: inherit; white-space: pre-wrap; word-wrap: break-word;">${$('<div/>').text(data).html()}</pre>`);
+		// Display only the raw text content without header/footer
+		$('body').html(`<pre style="margin: 0; padding: 0; background-color: transparent; font-family: inherit; white-space: pre-wrap; word-wrap: break-word;">${$('<div/>').text(data).html()}</pre>`);
 	}).fail(function() {
-		$("#content").html(`<pre>Failed to load file content</pre>`);
+		$('body').html(`<pre>Failed to load file content</pre>`);
 	});
 }
 
