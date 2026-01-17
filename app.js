@@ -1153,7 +1153,7 @@ async function fallback(id, type) {
 					} else if (mimeType.includes("pdf") || pdf.includes(fileExtension)) {
 						file_pdf(name, encoded_name, size, url, file_id, cookie_folder_id);
 					} else if (code.includes(fileExtension)) {
-						file_code(name, encoded_name, size, url, file_id, cookie_folder_id);
+						file_code(name, encoded_name, size, obj.size, url, fileExtension, file_id, cookie_folder_id);
 					} else {
 						file_others(name, encoded_name, size, url, file_id, cookie_folder_id);
 					}
@@ -1231,7 +1231,7 @@ async function file(path) {
 				} else if (subtitle.includes(fileExtension)) {
 					file_subtitle(name, encoded_name, size, url, file_id, cookie_folder_id);
 				} else if (code.includes(fileExtension)) {
-					file_code(name, encoded_name, size, url, file_id, cookie_folder_id);
+					file_code(name, encoded_name, size, obj.size, url, fileExtension, file_id, cookie_folder_id);
 				} else {
 					file_others(name, encoded_name, size, url, file_id, cookie_folder_id);
 				}
@@ -1259,10 +1259,9 @@ async function file(path) {
 const copyButton = `<button onclick="copyFunction()" onmouseout="outFunc()" class="btn btn-success"> <span class="tooltiptext" id="myTooltip">Copy</span> </button>`
 
 // Function to copy raw subtitle link to clipboard
-function copyRawLink(link) {
+function copyRawLink(link, btn) {
 	navigator.clipboard.writeText(link)
 		.then(function() {
-			const btn = event.target;
 			const originalText = btn.textContent;
 			btn.textContent = "Copied!";
 			btn.classList.add("btn-success");
@@ -1339,7 +1338,7 @@ function file_subtitle(name, encoded_name, size, url, file_id, cookie_folder_id)
             ` + copyButton + `
             <div class="btn-group text-center ms-2">
                 <a href="${rawViewLink}" type="button" class="btn btn-info" target="_blank" title="View subtitle file content in raw format">View As Raw</a>
-                <button type="button" class="btn btn-info" onclick="copyRawLink('${rawViewLink}')" title="Copy raw view link for AI processing">Copy View As Raw Link</button>
+                <button type="button" class="btn btn-info" onclick="copyRawLink('${rawViewLink}', this)" title="Copy raw view link for AI processing">Copy View As Raw Link</button>
             </div>
             ` + copyFileBox + `
             </div>
